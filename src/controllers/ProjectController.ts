@@ -27,8 +27,6 @@ export class ProjectController{
         } catch (error) {
             console.log(error)
         }
-        res.send('Get all projects')
-
     }   
 
 
