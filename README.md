@@ -12,3 +12,13 @@ npm i colors
 npm i mongoose dotenv
 
 npm i express-validator
+
+npm i cors
+
+npm i -D @types/cors
+
+npm i morgan
+
+npm i -D @types/morgan
+
+

@@ -4,7 +4,8 @@ import { ProjectController } from "../controllers/ProjectController";
 import { handleInputErrors } from "../middleware/validation";
 import Task from "../models/Task";
 import { TaskController } from "../controllers/TaskController";
-import { validateProjectExists } from "../middleware/project";
+import { ProjectExists } from "../middleware/project";
+import { taskBelongsToProject, taskExists } from "../middleware/task";
 
 const router = Router()
 
@@ -28,11 +29,10 @@ router.post('/',
 router.get('/', ProjectController.getAllProjects)
 
 router.get('/:id',
-
     param('id').isMongoId().withMessage('Invalid project ID'),
 
     handleInputErrors,
-
+    
     ProjectController.getProjectById
 
 )
@@ -67,9 +67,9 @@ router.delete('/:id',
 
 
 /**ROutes for Task */
-router.param('projectId', validateProjectExists)
+router.param('projectId', ProjectExists)
+
 router.post('/:projectId/tasks',
-    param('projectId').isMongoId().withMessage('Invalid project ID'),
     body('name')
         .notEmpty().withMessage('Name is required'),
     body('description')
@@ -80,14 +80,14 @@ router.post('/:projectId/tasks',
 )
 
 router.get('/:projectId/tasks',
-    param('projectId').isMongoId().withMessage('Invalid project ID'),
     handleInputErrors,
     TaskController.getProjectTask
 
 )
 
+router.param('taskId', taskExists)
+router.param('taskId', taskBelongsToProject)
 router.get('/:projectId/task/:taskId',
-    param('projectId').isMongoId().withMessage('Invalid project ID'),
     param('taskId').isMongoId().withMessage('Invalid task ID'),
     handleInputErrors,
     TaskController.getTaskById
@@ -95,7 +95,6 @@ router.get('/:projectId/task/:taskId',
 )
 
 router.put('/:projectId/task/:taskId',
-    param('projectId').isMongoId().withMessage('Invalid project ID'),
     param('taskId').isMongoId().withMessage('Invalid task ID'),
     body('name')
         .notEmpty().withMessage('Name is required'),
@@ -104,6 +103,24 @@ router.put('/:projectId/task/:taskId',
     handleInputErrors,
     TaskController.updateTask
 
+)
+
+router.delete('/:projectId/task/:taskId',
+    param('taskId').isMongoId().withMessage('Invalid task ID'),
+   
+    handleInputErrors,
+    TaskController.deleteTask
+
+)
+
+router.post('/:projectId/task/:taskId/status',
+    
+    param('taskId').isMongoId().withMessage('Invalid task ID'),
+    body('status')
+        .notEmpty().withMessage('Status is required'),
+
+    handleInputErrors,
+    TaskController.updateStatus
 )
 
 export default router;  

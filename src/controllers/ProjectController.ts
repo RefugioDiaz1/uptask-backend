@@ -13,7 +13,7 @@ export class ProjectController{
             // await Project.create(req.body)
             res.send('Project created successfully')
         } catch (error) {
-            console.log(error)
+            return res.status(500).json({error: error.message})
         }
     }   
 
@@ -25,48 +25,46 @@ export class ProjectController{
             res.json(projects)
 
         } catch (error) {
-            console.log(error)
+            return res.status(500).json({error: error.message})
         }
     }   
-
 
     static getProjectById = async(req: Request, res: Response)=>{
         
         const {id} = req.params
         try {
-            const projects = await (await Project.findById(id)).populate('tasks')
-
+            const projects = await (await Project.findById(id).populate('tasks'))
             if(!projects)
             {
                 const error = new Error('Project not found')
                 return res.status(404).json({error: error.message})
             }
-
             res.json(projects)
 
         } catch (error) {
-            console.log(error)
+            return res.status(500).json({error: error.message})
         }
     }   
-
+    
     static updateProject = async(req: Request, res: Response)=>{
 
         const {id} = req.params
         try {
-          
-            const project = await Project.findByIdAndUpdate(id, req.body)
+            const project = await Project.findById(id)
 
             if(!project)
-            {
+            {   
                 const error = new Error('Project not found')
                 return res.status(404).json({error: error.message})
             } 
-
+            project.clientName = req.body.clientName
+            project.projectName = req.body.projectName
+            project.description = req.body.description
             await project.save()
             res.send('Project updated successfully')
 
         } catch (error) {
-            console.log(error)
+            return res.status(500).json({error: error.message})
         }
     }  
 
@@ -88,7 +86,7 @@ export class ProjectController{
             res.send('Project deleted successfully')
 
         } catch (error) {
-            console.log(error)
+            return res.status(500).json({error: error.message})
         }
     }  
 
