@@ -1,5 +1,6 @@
 import type {Request, Response, NextFunction} from 'express'
 import Task, { ITask } from '../models/Task'
+import mongoose from 'mongoose'
 
 declare global {
     namespace Express {
@@ -12,8 +13,13 @@ declare global {
 export async function taskExists(req: Request, res: Response, next: NextFunction) {
 
         try {
-
+            
             const {taskId} = req.params
+
+            if(!mongoose.Types.ObjectId.isValid(taskId.toString())){
+                return res.status(400).json({error: "Invalid Task Id"})
+            }  
+
             const task = await Task.findById(taskId)
 
             if(!task)

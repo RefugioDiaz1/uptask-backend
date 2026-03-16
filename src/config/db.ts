@@ -5,10 +5,10 @@ import mongoose from "mongoose";
 export const connectDB = async () => {
     try {
         dns.setServers(['8.8.8.8', '1.1.1.1']) // ← fuerza DNS de Google/Cloudflare
-        
-        const {connection} = await mongoose.connect(process.env.DATABASE_URL, {
-            family: 4
-        })
+
+        const { connection } = await mongoose.connect(process.env.DATABASE_URL, {
+    authSource: "admin"
+});
         const { host, name } = connection
 
         const url = `${connection.host}:${connection.port}/${connection.name}`
