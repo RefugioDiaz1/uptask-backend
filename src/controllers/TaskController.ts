@@ -18,7 +18,6 @@ export class TaskController{
             res.send('Task created successfully')
 
         } catch (error) {
-            console.error('createTaskProject error:', error)
             res.status(500).json({error:"Hubo un error"})
         }
     }   

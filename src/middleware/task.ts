@@ -17,7 +17,7 @@ export async function taskExists(req: Request, res: Response, next: NextFunction
             const {taskId} = req.params
 
             if(!mongoose.Types.ObjectId.isValid(taskId.toString())){
-                return res.status(400).json({error: "Invalid Task Id"})
+                return res.status(400).json({error: "Invalid Task Id for Mongo"})
             }  
 
             const task = await Task.findById(taskId)

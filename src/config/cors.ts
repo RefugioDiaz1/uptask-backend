@@ -5,9 +5,14 @@ export const corsConfig : CorsOptions= {
     {
         const whitelist = [process.env.FRONTEND_URL]
         
-        if (!origin) {
-            // Permite acceso directo desde navegador o herramientas como Postman
-            return callback(null, true)
+        // if (!origin) {
+        //     // Permite acceso directo desde navegador o herramientas como Postman
+        //     return callback(null, true)
+        // }
+
+        if(process.argv[2] === '--api')
+        {
+            whitelist.push(undefined)
         }
 
         if(whitelist.includes(origin))

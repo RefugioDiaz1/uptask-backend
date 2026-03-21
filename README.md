@@ -22,3 +22,18 @@ npm i morgan
 npm i -D @types/morgan
 
 
+aqui va relacionado todo lo de login
+
+npm i bcrypt
+
+npm i -D @types/bcrypt
+
+
+mailtrap --> para emails
+resend.com --> correos reales
+
+npm i nodemailer
+
+npm i -D @types/nodemailer
+
+
