@@ -180,16 +180,17 @@ export class AuthController {
             const token = new Token()
             token.token = generateToken()
             token.user = user._id
-            
+
+            await token.save()
+
             // Enviar el email
-            AuthEmail.sendConfirmationEmail({
+            AuthEmail.sendPasswordResetToken({
                 email:user.email,
                 name: user.name,
                 token:token.token
             })
             
-            await token.save()
-            res.send('Se envio un nuevo token a tu email')
+            res.send('Revisa tu email para instrucciones')
 
         } catch (error) {
             res.status(500).json({error:"Hubo un error"})
