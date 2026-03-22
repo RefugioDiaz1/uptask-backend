@@ -36,4 +36,8 @@ npm i nodemailer
 
 npm i -D @types/nodemailer
 
+JWT
+npm i jsonwebtoken
+
+npm i -D @types/jsonwebtoken
 
