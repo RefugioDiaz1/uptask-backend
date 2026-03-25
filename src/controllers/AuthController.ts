@@ -112,14 +112,14 @@ export class AuthController {
             if(!isPasswordCorrect)
             {
                 const error = new Error('Password Incorrecto')
-                return res.status(401).json({error:error.message})
+                return res.status(401).json({error:error.message}) 
             }
 
-            const token = generateJWT()
-            console.log(token)
+            const token = generateJWT({id: user._id.toString()})
             res.send(token)
 
         } catch (error) {
+            console.log(error)
             res.status(500).json({error:"Hubo un error"})
         }
     }
@@ -244,5 +244,8 @@ export class AuthController {
         }
     }
 
-
+    static user = async (req : Request, res: Response)=>{
+        return res.json(req.user)
+    }
+    
 }

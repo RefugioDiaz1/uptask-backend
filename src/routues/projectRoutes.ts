@@ -6,11 +6,13 @@ import Task from "../models/Task";
 import { TaskController } from "../controllers/TaskController";
 import { ProjectExists } from "../middleware/project";
 import { taskBelongsToProject, taskExists } from "../middleware/task";
+import { authenticate } from "../middleware/auth";
 
 const router = Router()
 
-router.post('/',
+router.use(authenticate)
 
+router.post('/',
     body('projectName')
         .notEmpty().withMessage('Project name is required'),
 
@@ -26,9 +28,11 @@ router.post('/',
 
 )
 
-router.get('/', ProjectController.getAllProjects)
+router.get('/', 
+    ProjectController.getAllProjects)
 
 router.get('/:id',
+
     param('id').isMongoId().withMessage('Invalid project ID'),
 
     handleInputErrors,
