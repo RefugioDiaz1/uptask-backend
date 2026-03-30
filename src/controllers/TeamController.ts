@@ -1,0 +1,77 @@
+import { Request, Response } from 'express';
+import User from '../models/User';
+import Project from '../models/Project';
+
+export class TeamMemberController{
+    static async findMemberByEmail(req: Request, res: Response) {
+        const { email } = req.body;
+
+        //Find user
+        const user = await User.findOne({ email }).select('id email name')
+
+        if(!user)
+        {
+            const error = new Error('User not found');
+            return res.status(404).json({error :error.message})
+        }
+
+        res.json({ user });
+    }
+
+    
+    static async getProjectTeam(req: Request, res: Response) {
+        
+        const {_id} = req.project
+        const project = await Project.findById(_id).populate({
+            path:'team',
+            select:'id email name'
+        })
+
+        res.json(project.team)
+
+     }
+
+    static async addMemberById(req: Request, res: Response) {
+        const { id } = req.body;
+        
+         //Find user
+        const user = await User.findById({ _id: id }).select('id')
+
+        if(!user)
+        {
+            const error = new Error('User not found');
+            return res.status(404).json({error :error.message})
+        }
+
+        if(req.project.team.some(team => team.toString() === user.id.toString()))
+        {
+            const error = new Error('User is already a team member');
+            return res.status(409).json({error :error.message})
+        }
+
+        req.project.team.push(user._id)
+        await req.project.save()
+
+        res.send('User added to team successfully');
+
+    }
+
+     static async removeMemberById(req: Request, res: Response) {
+
+        const { id } = req.body
+        
+        if(!req.project.team.some(team => team.toString() === id))
+        {
+            const error = new Error('User is not a team member');
+            return res.status(409).json({error :error.message})
+        }
+
+        req.project.team = req.project.team.filter(team=>team.toString() !== id)
+
+        await req.project.save()
+
+        res.send('User removed from team successfully');
+
+     }
+
+}

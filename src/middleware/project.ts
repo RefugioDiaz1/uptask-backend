@@ -1,5 +1,6 @@
 import type {Request, Response, NextFunction} from 'express'
 import Project, { IProject } from '../models/Project'
+import mongoose from 'mongoose'
 
 declare global {
     namespace Express {
@@ -10,10 +11,14 @@ declare global {
 }
 
 export async function ProjectExists(req: Request, res: Response, next: NextFunction) {
-
         try {
             const {projectId} = req.params
-            const project = await Project.findById(projectId)
+
+            if(!mongoose.Types.ObjectId.isValid(projectId.toString())){
+                            return res.status(400).json({error: "Invalid Task Id for Mongo"})
+                        }  
+
+            const project = await Project.findById(projectId)            
 
             if(!project)
             {
