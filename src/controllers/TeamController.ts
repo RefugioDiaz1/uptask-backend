@@ -5,7 +5,7 @@ import Project from '../models/Project';
 export class TeamMemberController{
     static async findMemberByEmail(req: Request, res: Response) {
         const { email } = req.body;
-
+        
         //Find user
         const user = await User.findOne({ email }).select('id email name')
 
@@ -58,15 +58,15 @@ export class TeamMemberController{
 
      static async removeMemberById(req: Request, res: Response) {
 
-        const { id } = req.body
+        const { userId } = req.params
         
-        if(!req.project.team.some(team => team.toString() === id))
+        if(!req.project.team.some(team => team.toString() === userId))
         {
             const error = new Error('User is not a team member');
             return res.status(409).json({error :error.message})
         }
 
-        req.project.team = req.project.team.filter(team=>team.toString() !== id)
+        req.project.team = req.project.team.filter(team=>team.toString() !== userId)
 
         await req.project.save()
 

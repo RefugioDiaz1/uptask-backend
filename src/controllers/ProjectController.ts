@@ -24,7 +24,8 @@ export class ProjectController{
         try {
             const projects = await Project.find({
                 $or:[
-                    {manager: {$in: req.user._id}}
+                    {manager: {$in: [req.user._id]}},
+                    {team: {$in: [req.user._id]}}
                 ]
             }) //.populate('tasks')
             res.json(projects)
@@ -38,14 +39,18 @@ export class ProjectController{
         
         const {id} = req.params
         try {
-            const project = await (await Project.findById(id).populate('tasks'))
+            const project = await (await Project.findById(id).populate({
+                path: 'tasks',
+                populate: {path: 'completedBy.user', select: 'id name email'}
+            } ))
+
             if(!project)
             {
                 const error = new Error('Project not found')
                 return res.status(404).json({error: error.message})
             }
                 
-            if(project.manager.toString() !== req.user._id.toString())
+            if(project.manager.toString() !== req.user._id.toString() && !project.team.includes(req.user._id))
             {
                 const error = new Error('Action not valid')
                 return res.status(404).json({error: error.message})
@@ -102,7 +107,7 @@ export class ProjectController{
             
             if(project.manager.toString() !== req.user._id.toString())
             {
-                const error = new Error('only the manager can update a project')
+                const error = new Error('only the manager can deleted a project')
                 return res.status(404).json({error: error.message})
             }
 
