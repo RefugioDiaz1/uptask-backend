@@ -36,13 +36,10 @@ export class ProjectController{
     }   
 
     static getProjectById = async(req: Request, res: Response)=>{
-        
+       
         const {id} = req.params
         try {
-            const project = await (await Project.findById(id).populate({
-                path: 'tasks',
-                populate: {path: 'completedBy.user', select: 'id name email'}
-            } ))
+            const project = await (await Project.findById(id).populate('tasks'))
 
             if(!project)
             {
@@ -65,26 +62,12 @@ export class ProjectController{
     
     static updateProject = async(req: Request, res: Response)=>{
 
-        const {id} = req.params
         try {
-            const project = await Project.findById(id)
-
-            if(!project)
-            {   
-                const error = new Error('Project not found')
-                return res.status(404).json({error: error.message})
-            } 
- 
-            if(project.manager.toString() !== req.user._id.toString())
-            {
-                const error = new Error('only the manager can update a project')
-                return res.status(404).json({error: error.message})
-            }
-
-            project.clientName = req.body.clientName
-            project.projectName = req.body.projectName
-            project.description = req.body.description
-            await project.save()
+         
+            req.project.clientName = req.body.clientName
+            req.project.projectName = req.body.projectName
+            req.project.description = req.body.description
+            await req.project.save()
             res.send('Project updated successfully')
 
         } catch (error) {
@@ -94,24 +77,9 @@ export class ProjectController{
 
     static deleteProject = async(req: Request, res: Response)=>{
 
-        const {id} = req.params
         try {
           
-            const project = await Project.findById(id)
-            
-            if(!project)
-            {
-                const error = new Error('Project not found')
-                return res.status(404).json({error: error.message})
-            } 
-            
-            if(project.manager.toString() !== req.user._id.toString())
-            {
-                const error = new Error('only the manager can deleted a project')
-                return res.status(404).json({error: error.message})
-            }
-
-            await project?.deleteOne()
+            await req.project?.deleteOne()
             
             res.send('Project deleted successfully')
 

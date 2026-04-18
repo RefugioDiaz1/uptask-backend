@@ -248,4 +248,78 @@ export class AuthController {
         return res.json(req.user)
     }
     
+    static updateProfile = async (req : Request, res: Response)=>{
+
+        const {name, email} = req.body
+        try {
+
+            const userExist = await User.findOne({email})
+            if(userExist && userExist.id.toString() !== req.user._id.toString())
+            {
+                const error = new Error('Ese Email ya está Registrado')
+                return res.status(409).json({error:error.message})
+            }
+
+            req.user.name = name
+            req.user.email = email
+
+            await req.user.save()
+            res.send('Perfil Actualizado Correctamente')
+        } catch (error) {
+            res.status(500).json({error:"Hubo un error"})
+        }
+
+    }
+
+    static updateCurrentUserPassword = async (req : Request, res: Response)=>{
+        
+        const {current_password,password} = req.body
+        
+        try {
+            const user = await User.findById(req.user._id)
+            
+            if(current_password === password)
+            {
+                 const error = new Error('El password Nuevo no puede ser el mismo que el actual')
+                return res.status(401).json({error:error.message})
+            }
+
+            const isPasswordCorrect = await checkPassword(current_password, user.password)
+
+            if(!isPasswordCorrect)
+            {
+                const error = new Error('El Password Actual es Incorrecto')
+                return res.status(401).json({error:error.message})
+            }
+
+            user.password = await hashPassword(password)
+            await user.save()
+            res.send('El Password se Modificó Correctamente')
+
+        } catch (error) {
+            
+        }
+    }
+
+    static checkPassword = async (req : Request, res: Response)=>{
+
+          const {password} = req.body
+        
+        try {
+            const user = await User.findById(req.user._id)
+            
+            const isPasswordCorrect = await checkPassword(password, user.password)
+
+            if(!isPasswordCorrect)
+            {
+                const error = new Error('El Password es Incorrecto')
+                return res.status(401).json({error:error.message})
+            }
+
+             } catch (error) {                       
+        }
+
+            res.send('Password Correcto')
+    }   
+
 }

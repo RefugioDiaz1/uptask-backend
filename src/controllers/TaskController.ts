@@ -44,6 +44,7 @@ export class TaskController{
                             
             res.json(task)
         } catch (error) {
+            
             res.status(500).json({error:"Hubo un error"})
         }
     }

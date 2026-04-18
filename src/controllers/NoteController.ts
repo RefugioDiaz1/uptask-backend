@@ -12,7 +12,7 @@ export class NoteController{
         const {content} = req.body
         const note = new Note()
         note.content = content
-        note.createBy = req.user._id
+        note.createdBy = req.user._id
         note.task = req.task._id
 
         req.task.notes.push(note._id)
@@ -46,7 +46,7 @@ export class NoteController{
                 return res.status(404).json({error:error.message})
             }
 
-            if(note.createBy.toString() !== req.user._id.toString())
+            if(note.createdBy.toString() !== req.user._id.toString())
             {
                 const error = new Error('Action not Valid')
                 return res.status(401).json({error:error.message})
