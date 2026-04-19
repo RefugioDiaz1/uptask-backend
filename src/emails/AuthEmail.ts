@@ -1,4 +1,4 @@
-import { resend } from '../config/resend'
+import { transporter } from '../config/gmailSend'
 
 interface IEmail{
     email:string
@@ -11,8 +11,8 @@ export class AuthEmail{
         const confirmUrl = `${process.env.FRONTEND_URL || 'https://uptask.com'}/auth/confirm-account`
 
         try {
-            const info = await resend.emails.send({
-                from: 'UpTask <onboarding@resend.dev>',
+            const info = await transporter.sendMail({
+                from: `"UpTask" <${process.env.SMTP_USER}>`,
                 to: user.email,
                 subject: 'UpTask - Confirma tu cuenta',
                 text: `Hola ${user.name}, por favor confirma tu cuenta con este token: ${user.token}`,
@@ -55,8 +55,8 @@ export class AuthEmail{
         const newpassword = `${process.env.FRONTEND_URL || 'https://uptask.com'}/auth/new-password`
 
         try {
-             const info = await resend.emails.send({
-                from: 'UpTask <onboarding@resend.dev>',
+             const info = await transporter.sendMail({
+                from: `"UpTask" <${process.env.SMTP_USER}>`,
                 to: user.email,
                 subject: 'UpTask - Restablece tu password',
                 text: `Hola ${user.name}, por favor restablece tu password con este token: ${user.token}`,
