@@ -10,7 +10,8 @@ export class AuthEmail{
     static sendConfirmationEmail = async(user: IEmail)=>{
         const confirmUrl = `${process.env.FRONTEND_URL || 'https://uptask.com'}/auth/confirm-account`
 
-        const info = await resend.emails.send({
+        try {
+            const info = await resend.emails.send({
                 from: 'UpTask <onboarding@resend.dev>',
                 to: user.email,
                 subject: 'UpTask - Confirma tu cuenta',
@@ -43,12 +44,18 @@ export class AuthEmail{
                     </div>
                 `
             })
+            console.log('EMAIL SENT:', info)
+        } catch (error) {
+            console.error('EMAIL ERROR:', error)
+        }
+        
     }
 
     static sendPasswordResetToken = async(user: IEmail)=>{
         const newpassword = `${process.env.FRONTEND_URL || 'https://uptask.com'}/auth/new-password`
 
-        const info = await resend.emails.send({
+        try {
+             const info = await resend.emails.send({
                 from: 'UpTask <onboarding@resend.dev>',
                 to: user.email,
                 subject: 'UpTask - Restablece tu password',
@@ -81,6 +88,11 @@ export class AuthEmail{
                     </div>
                 `
             })
+            console.log('EMAIL SENT:', info)
+        } catch (error) {
+            console.error('EMAIL ERROR:', error)
+        }
+       
 
     }
 
