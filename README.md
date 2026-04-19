@@ -41,3 +41,5 @@ npm i jsonwebtoken
 
 npm i -D @types/jsonwebtoken
 
+resend envio de correos
+npm install resend

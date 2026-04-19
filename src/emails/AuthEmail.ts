@@ -1,5 +1,4 @@
-
-import { transporter } from '../config/nodemailer'
+import { resend } from '../config/resend'
 
 interface IEmail{
     email:string
@@ -11,8 +10,8 @@ export class AuthEmail{
     static sendConfirmationEmail = async(user: IEmail)=>{
         const confirmUrl = `${process.env.FRONTEND_URL || 'https://uptask.com'}/auth/confirm-account`
 
-        const info = await transporter.sendMail({
-                from: 'UpTask <admin@uptask.com>',
+        const info = await resend.emails.send({
+                from: 'UpTask <onboarding@resend.dev>',
                 to: user.email,
                 subject: 'UpTask - Confirma tu cuenta',
                 text: `Hola ${user.name}, por favor confirma tu cuenta con este token: ${user.token}`,
@@ -49,8 +48,8 @@ export class AuthEmail{
     static sendPasswordResetToken = async(user: IEmail)=>{
         const newpassword = `${process.env.FRONTEND_URL || 'https://uptask.com'}/auth/new-password`
 
-        const info = await transporter.sendMail({
-                from: 'UpTask <admin@uptask.com>',
+        const info = await resend.emails.send({
+                from: 'UpTask <onboarding@resend.dev>',
                 to: user.email,
                 subject: 'UpTask - Restablece tu password',
                 text: `Hola ${user.name}, por favor restablece tu password con este token: ${user.token}`,
